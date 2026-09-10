@@ -1,0 +1,137 @@
+/* ==========================================================================
+   Pin Lock — the case: two hide-covered panels that meet at a seam and
+   swing open like a lid and a body.
+   ========================================================================== */
+
+.case {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+/* Once the halves are out of the way they must not sit in front of the
+   lining and swallow taps. */
+.stage[data-state="open"] .case {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* The plate and the hasp deliberately spill past their panel's edge, so
+     clipping happens on .panel__skin instead of here. */
+  overflow: visible;
+  backface-visibility: hidden;
+}
+
+.panel--lid {
+  top: 0;
+  height: var(--seam);
+  transform-origin: 50% 0%;
+  --skin-offset: 0px;
+}
+
+.panel--body {
+  top: var(--seam);
+  bottom: 0;
+  transform-origin: 50% 100%;
+  /* Slide the shared texture up by the seam height so the grain, weave and
+     sheen run continuously across the join. */
+  --skin-offset: calc(-1 * var(--seam-px, 0px));
+}
+
+/* --------------------------------------------------------------------------
+   Skin — one continuous hide, painted twice and offset per panel.
+   -------------------------------------------------------------------------- */
+
+.panel__skin {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--skin-mid);
+  background-image: var(--skin-sheen), var(--skin-base);
+  background-size: 100% var(--stage-h, 100%);
+  background-position: 0 var(--skin-offset);
+  background-repeat: no-repeat;
+}
+
+/* Pebble grain. */
+.panel__skin::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--skin-grain);
+  background-size: var(--skin-grain-size, 240px);
+  background-position: 0 var(--skin-offset);
+  mix-blend-mode: overlay;
+  opacity: var(--skin-grain-op, 0.5);
+}
+
+/* Weave, for the fabrics that have one. */
+.panel__skin::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--skin-weave, none);
+  background-size: var(--skin-weave-size, 12px);
+  background-position: 0 var(--skin-offset);
+  mix-blend-mode: soft-light;
+  opacity: var(--skin-weave-op, 0);
+}
+
+/* The closed seam: a dark hairline with the body's edge catching light. */
+.panel--lid .panel__skin {
+  box-shadow:
+    inset 0 -2px 4px -1px rgba(0, 0, 0, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.panel--body .panel__skin {
+  box-shadow:
+    inset 0 3px 5px -2px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* Darkens as the panel turns away from the light. Opacity is driven by JS. */
+.panel__shade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Hint — pressed into the hide below the plate, like a blind-embossed mark.
+   -------------------------------------------------------------------------- */
+
+.hint {
+  position: absolute;
+  top: calc(var(--plate-h) + 40px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0 24px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.34);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.14);
+  opacity: 0;
+  transition: opacity 520ms ease;
+  pointer-events: none;
+}
+
+.hint[data-show="1"] { opacity: 1; }
+
+.hint--code {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: rgba(0, 0, 0, 0.4);
+}

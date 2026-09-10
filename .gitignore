@@ -1,0 +1,5 @@
+# Built by `node build.mjs`; the source runs directly from index.html.
+dist/
+
+.DS_Store
+node_modules/

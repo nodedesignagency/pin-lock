@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b0b0d">
+<meta name="description" content="A combination-lock screen: dial the code, slide the brass catch, and the case swings open.">
+<title>Pin Lock</title>
+
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%23301608"/><rect x="3" y="11" width="26" height="10" rx="2" fill="%23c9a051"/><g fill="%23241703"><rect x="7" y="13.4" width="3.6" height="5.2" rx="1"/><rect x="12" y="13.4" width="3.6" height="5.2" rx="1"/><rect x="17" y="13.4" width="3.6" height="5.2" rx="1"/></g><rect x="23" y="13" width="3.6" height="6" rx="1.2" fill="%23f7e6b4"/></svg>'>
+
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/case.css">
+<link rel="stylesheet" href="styles/lock.css">
+<link rel="stylesheet" href="styles/inside.css">
+</head>
+<body>
+
+<div class="viewport">
+  <div class="frame" id="frame">
+    <div class="stage" id="stage">
+
+      <!-- ── What lives inside the case ─────────────────────────────── -->
+      <section class="inside" id="inside" aria-hidden="true" inert>
+        <div class="inside__sheen" aria-hidden="true"></div>
+
+        <div class="inside__content">
+          <p class="inside__eyebrow">Unlocked</p>
+          <h1 class="inside__title">Hello!</h1>
+          <p class="inside__sub" id="insideSub">Chestnut &middot; Brass</p>
+        </div>
+
+        <div class="inside__tray">
+          <p class="deck__label" id="deckLabel">Pick a hide</p>
+          <div class="deck" id="deck" role="radiogroup" aria-labelledby="deckLabel"></div>
+          <div class="inside__actions">
+            <button class="ghost-btn" id="relock" type="button">Close the case</button>
+            <button class="ghost-btn ghost-btn--icon" id="soundToggle" type="button"
+                    aria-pressed="true" aria-label="Mute sound">
+              <span class="ghost-btn__glyph" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── The case itself ────────────────────────────────────────── -->
+      <div class="case" id="case">
+
+        <!-- lower half: carries the dial plate -->
+        <div class="panel panel--body" id="panelBody">
+          <div class="panel__skin"></div>
+          <div class="panel__shade" aria-hidden="true"></div>
+
+          <div class="plate" id="plate">
+            <div class="plate__face">
+              <i class="screw screw--tl" aria-hidden="true"></i>
+              <i class="screw screw--tr" aria-hidden="true"></i>
+              <i class="screw screw--bl" aria-hidden="true"></i>
+              <i class="screw screw--br" aria-hidden="true"></i>
+
+              <button class="reveal" id="reveal" type="button"
+                      aria-label="Press and hold to reveal the combination">
+                <span class="reveal__knurl" aria-hidden="true"></span>
+                <span class="reveal__pip" aria-hidden="true"></span>
+              </button>
+
+              <div class="dials" id="dials"></div>
+
+              <span class="plate__mark" aria-hidden="true">Pin&nbsp;Lock</span>
+
+              <div class="catchwell">
+                <span class="catchwell__slot" aria-hidden="true"></span>
+                <button class="catch" id="catch" type="button"
+                        aria-label="Slide to release the catch">
+                  <span class="catch__ribs" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="hint" id="hint" aria-hidden="true"></p>
+        </div>
+
+        <!-- upper half: carries the hinged hasp. Sits above the body so the
+             arm reads as resting on top of the plate. -->
+        <div class="panel panel--lid" id="panelLid">
+          <div class="panel__skin"></div>
+          <div class="panel__shade" aria-hidden="true"></div>
+
+          <div class="hasp" id="hasp">
+            <span class="hasp__mount" aria-hidden="true"></span>
+            <span class="hasp__knuckle" aria-hidden="true"></span>
+            <div class="hasp__swing" id="haspSwing">
+              <span class="hasp__arm" aria-hidden="true"></span>
+              <span class="hasp__tongue" aria-hidden="true"></span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /case -->
+
+      <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
+    </div><!-- /stage -->
+  </div><!-- /frame -->
+</div><!-- /viewport -->
+
+<script src="js/textures.js"></script>
+<script src="js/materials.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/drum.js"></script>
+<script src="js/lock.js"></script>
+<script src="js/case.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,457 @@
+/* ==========================================================================
+   Pin Lock — the hardware: a brushed plate, three number drums, a hinged
+   hasp and a sliding catch.
+   ========================================================================== */
+
+/* Geometry for everything below lives on .stage — see base.css. */
+
+.plate {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: var(--plate-w);
+  height: var(--plate-h);
+  transform: translateX(-50%);
+}
+
+.plate__face {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--plate-h) * 0.045);
+  background-color: var(--metal-mid);
+  background-image: linear-gradient(
+    104deg,
+    var(--metal-lo) 0%,
+    var(--metal-mid) 14%,
+    var(--metal-hi) 30%,
+    var(--metal-mid) 44%,
+    var(--metal-lo) 58%,
+    var(--metal-mid) 74%,
+    var(--metal-hi) 87%,
+    var(--metal-lo) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 1px 0 0 rgba(255, 255, 255, 0.22),
+    inset -1px 0 0 rgba(0, 0, 0, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.18),
+    0 1px 1px rgba(0, 0, 0, 0.55),
+    0 5px 10px rgba(0, 0, 0, 0.38),
+    0 12px 24px -6px rgba(0, 0, 0, 0.4);
+}
+
+/* Brushed grain, stretched along the plate. */
+.plate__face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--metal-brush);
+  background-size: 200px 60px;
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+}
+
+/* --------------------------------------------------------------------------
+   Screws
+   -------------------------------------------------------------------------- */
+
+.screw {
+  position: absolute;
+  width: var(--screw-d);
+  height: var(--screw-d);
+  border-radius: 50%;
+  background:
+    linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0 1px, transparent 1px) 50% 50% / 62% 100% no-repeat,
+    linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0 1px, transparent 1px) 50% 50% / 100% 62% no-repeat,
+    radial-gradient(circle at 34% 30%, var(--metal-hi), var(--metal-mid) 55%, var(--metal-deep) 100%);
+  box-shadow:
+    inset 0 -1px 1px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.45),
+    0 1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.screw--tl { top: 11%; left: 2.6%; }
+.screw--tr { top: 11%; right: 2.6%; }
+.screw--bl { bottom: 11%; left: 2.6%; }
+.screw--br { bottom: 11%; right: 2.6%; }
+
+/* --------------------------------------------------------------------------
+   Reveal button — knurled, and press-and-hold shows the combination.
+   -------------------------------------------------------------------------- */
+
+.reveal {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--reveal-x) * var(--plate-w));
+  width: var(--reveal-d);
+  height: var(--reveal-d);
+  margin: calc(var(--reveal-d) / -2) 0 0 calc(var(--reveal-d) / -2);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 34% 28%,
+    var(--metal-hi) 0%,
+    var(--metal-mid) 48%,
+    var(--metal-deep) 100%
+  );
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(0, 0, 0, 0.28),
+    0 2px 3px rgba(0, 0, 0, 0.45);
+  transition: transform 140ms ease, box-shadow 140ms ease;
+  touch-action: none;
+}
+
+.reveal__knurl {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(0, 0, 0, 0.3) 0deg 2.2deg,
+    rgba(255, 255, 255, 0.24) 2.2deg 4.6deg,
+    transparent 4.6deg 8deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 54%, #000 60%);
+  mask: radial-gradient(circle, transparent 54%, #000 60%);
+}
+
+.reveal__pip {
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, var(--metal-hi), var(--metal-mid) 62%, var(--metal-deep));
+  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.reveal:active,
+.reveal[data-held="1"] {
+  transform: translateY(1px) scale(0.97);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Number drums
+   -------------------------------------------------------------------------- */
+
+.dials {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--dials-x) * var(--plate-w));
+  display: flex;
+  gap: var(--dial-gap);
+  transform: translate(-50%, -50%);
+}
+
+.dial {
+  position: relative;
+  width: var(--dial-w);
+  height: var(--dial-h);
+  border-radius: calc(var(--dial-w) * 0.09);
+  overflow: hidden;
+  perspective: calc(var(--dial-h) * 6.5);
+  background: #140d04;
+  box-shadow:
+    inset 0 3px 5px rgba(0, 0, 0, 0.85),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+  touch-action: none;
+  cursor: grab;
+}
+
+.dial[data-drag="1"] { cursor: grabbing; }
+
+.dial:focus-visible {
+  outline: 2px solid rgba(120, 200, 255, 0.9);
+  outline-offset: 2px;
+}
+
+.dial__drum {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.dial__digit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-image: linear-gradient(
+    180deg,
+    var(--drum-hi) 0%,
+    var(--drum-mid) 46%,
+    var(--drum-lo) 100%
+  );
+  color: var(--digit-ink);
+  font-size: calc(var(--dial-h) * 0.56);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Fakes the curve of the drum plus the glint off its shoulder. */
+.dial::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.42) 20%,
+    rgba(0, 0, 0, 0.05) 38%,
+    rgba(255, 255, 255, 0.14) 49%,
+    rgba(0, 0, 0, 0.05) 60%,
+    rgba(0, 0, 0, 0.44) 79%,
+    rgba(0, 0, 0, 0.82) 100%
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Engraved mark
+   -------------------------------------------------------------------------- */
+
+.plate__mark {
+  position: absolute;
+  top: 74%;
+  left: calc(50% + var(--dials-x) * var(--plate-w));
+  transform: translateX(-50%);
+  font-size: calc(var(--plate-h) * 0.072);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(0, 0, 0, 0.34);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+/* --------------------------------------------------------------------------
+   Catch — the slot the hasp drops into, and the slide that frees it.
+   -------------------------------------------------------------------------- */
+
+.catchwell {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.catchwell__slot {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--slot-x) * var(--plate-w));
+  width: var(--slot-w);
+  height: calc(var(--plate-h) * 0.3);
+  margin: calc(var(--plate-h) * -0.15) 0 0 calc(var(--slot-w) / -2);
+  border-radius: 2px;
+  background: linear-gradient(180deg, #0d0903 0%, #241806 55%, #0b0702 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.9),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.34);
+}
+
+.catch {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--catch-x) * var(--plate-w));
+  width: var(--catch-w);
+  height: var(--catch-h);
+  margin: calc(var(--catch-h) / -2) 0 0 calc(var(--catch-w) / -2);
+  border-radius: calc(var(--catch-h) * 0.14);
+  overflow: hidden;
+  pointer-events: auto;
+  background-image: linear-gradient(
+    166deg,
+    var(--metal-hi) 0%,
+    var(--metal-mid) 34%,
+    var(--metal-deep) 72%,
+    var(--metal-mid) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -2px 2px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.32);
+  transform: translateX(var(--catch-slide, 0px));
+  transition: transform 240ms cubic-bezier(0.2, 0.85, 0.3, 1);
+  touch-action: none;
+}
+
+.catch[data-drag="1"] { transition: none; }
+
+.catch:focus-visible {
+  outline: 2px solid rgba(120, 200, 255, 0.9);
+  outline-offset: 3px;
+}
+
+.catch__ribs {
+  position: absolute;
+  inset: 22% 18%;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.32) 0 1px,
+    rgba(255, 255, 255, 0.3) 1px 2px,
+    transparent 2px 4px
+  );
+  opacity: 0.75;
+}
+
+/* The catch catches the light once the combination is right. */
+.catch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 34%,
+    rgba(255, 255, 255, 0.72) 50%,
+    transparent 66%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+}
+
+.plate[data-armed="1"] .catch { filter: brightness(1.1); }
+
+.plate[data-armed="1"] .catch::after {
+  opacity: 1;
+  animation: catch-sheen 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+@keyframes catch-sheen {
+  0%   { background-position: -120% 0; }
+  55%  { background-position: 220% 0; }
+  100% { background-position: 220% 0; }
+}
+
+@keyframes plate-reject {
+  0%, 100% { transform: translateX(-50%); }
+  16%      { transform: translateX(calc(-50% - 6px)); }
+  34%      { transform: translateX(calc(-50% + 5px)); }
+  52%      { transform: translateX(calc(-50% - 3px)); }
+  74%      { transform: translateX(calc(-50% + 2px)); }
+}
+
+.plate[data-reject="1"] { animation: plate-reject 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+
+/* --------------------------------------------------------------------------
+   Hasp — hinged to the lid, reaching down across the seam into the slot.
+   -------------------------------------------------------------------------- */
+
+.hasp {
+  --hasp-w: calc(var(--plate-w) * 0.132);
+  --hasp-head: calc(var(--plate-h) * 0.3);
+  /* Long enough that the tongue reaches the middle of the plate, where the
+     slot is. */
+  --hasp-arm: calc(var(--plate-h) * 0.82);
+
+  position: absolute;
+  bottom: 0;
+  left: calc(50% + var(--slot-x) * var(--plate-w));
+  width: var(--hasp-w);
+  height: var(--hasp-head);
+  margin-left: calc(var(--hasp-w) / -2);
+  perspective: 460px;
+}
+
+/* The little plate the hinge is screwed to, with a screw either side. */
+.hasp__mount {
+  position: absolute;
+  left: -46%;
+  right: -46%;
+  top: 0;
+  bottom: 48%;
+  border-radius: 2px 2px 0 0;
+  background-image:
+    radial-gradient(circle at 12% 62%, rgba(0, 0, 0, 0.42) 0 1.4px, transparent 1.8px),
+    radial-gradient(circle at 88% 62%, rgba(0, 0, 0, 0.42) 0 1.4px, transparent 1.8px),
+    linear-gradient(150deg, var(--metal-hi) 0%, var(--metal-mid) 40%, var(--metal-lo) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.24),
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.32);
+}
+
+/* The hinge barrel, sitting on the seam. */
+.hasp__knuckle {
+  position: absolute;
+  left: -18%;
+  right: -18%;
+  bottom: 26%;
+  height: 32%;
+  border-radius: 40px;
+  background-image: linear-gradient(
+    180deg,
+    var(--metal-deep) 0%,
+    var(--metal-hi) 26%,
+    var(--metal-mid) 52%,
+    var(--metal-deep) 100%
+  );
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+
+.hasp__swing {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--hasp-head) * 0.55);
+  height: var(--hasp-arm);
+  transform-origin: 50% 0;
+  transform: rotateX(var(--hasp-angle, 0deg));
+  transition: transform 260ms cubic-bezier(0.2, 0.85, 0.3, 1);
+  will-change: transform;
+}
+
+.hasp__arm {
+  position: absolute;
+  inset: 0 0 26% 0;
+  border-radius: 0 0 3px 3px;
+  background-image: linear-gradient(
+    100deg,
+    var(--metal-lo) 0%,
+    var(--metal-hi) 22%,
+    var(--metal-mid) 48%,
+    var(--metal-lo) 76%,
+    var(--metal-mid) 100%
+  );
+  box-shadow:
+    inset 1px 0 0 rgba(255, 255, 255, 0.4),
+    inset -1px 0 0 rgba(0, 0, 0, 0.32),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.16),
+    0 2px 3px rgba(0, 0, 0, 0.5),
+    0 6px 12px rgba(0, 0, 0, 0.34);
+}
+
+/* The tab that sits down inside the slot. */
+.hasp__tongue {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: calc(var(--slot-w) - 4px);
+  height: 34%;
+  margin-left: calc((var(--slot-w) - 4px) / -2);
+  border-radius: 0 0 2px 2px;
+  background-image: linear-gradient(
+    100deg,
+    var(--metal-lo) 0%,
+    var(--metal-mid) 30%,
+    var(--metal-hi) 55%,
+    var(--metal-lo) 100%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.5);
+}

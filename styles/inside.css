@@ -1,0 +1,277 @@
+/* ==========================================================================
+   Pin Lock — what's inside: the lining, the greeting, and the swatch deck.
+   ========================================================================== */
+
+.inside {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding:
+    calc(env(safe-area-inset-top, 0px) + 64px)
+    20px
+    calc(env(safe-area-inset-bottom, 0px) + 22px);
+  overflow: hidden;
+  background-color: var(--lining);
+  background-image:
+    radial-gradient(120% 80% at 50% -10%, rgba(255, 255, 255, 0.22) 0%, transparent 60%),
+    radial-gradient(90% 60% at 50% 108%, rgba(0, 0, 0, 0.34) 0%, transparent 62%);
+  color: #fff;
+  opacity: 0;
+  transform: scale(0.94);
+  /* The lining changes as the case shuts on a new hide. */
+  transition: background-color 420ms ease;
+}
+
+/* Fine satin weave, so the lining reads as cloth rather than paint. */
+.inside__sheen {
+  position: absolute;
+  inset: 0;
+  background-image: var(--lining-weave);
+  background-size: 160px 160px;
+  mix-blend-mode: soft-light;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.inside__content {
+  position: relative;
+  text-align: center;
+}
+
+.inside__eyebrow {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.inside__title {
+  margin: 0;
+  font-size: clamp(52px, 17vw, 76px);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.22);
+}
+
+.inside__sub {
+  margin: 16px 0 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+/* --------------------------------------------------------------------------
+   Tray
+   -------------------------------------------------------------------------- */
+
+.inside__tray {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.deck__label {
+  margin: 0 0 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+}
+
+/* A fanned-out hand of hides. Each card is rotated around a pivot well
+   below the tray so they splay like held playing cards. */
+.deck {
+  --sw-w: 70px;
+  --sw-h: 102px;
+
+  position: relative;
+  width: 100%;
+  /* Tall enough to hold the arc the outer cards swing down through. */
+  height: 148px;
+  margin-bottom: 6px;
+}
+
+.swatch {
+  --lift: 0px;
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  /* Centring belongs in the margin, not the transform: anything in the
+     transform list ahead of rotate() gets rotated along with the card and
+     throws the fan off to one side. */
+  margin-left: calc(var(--sw-w) / -2);
+  width: var(--sw-w);
+  height: var(--sw-h);
+  border-radius: 9px;
+  overflow: hidden;
+  /* Pivoting well below the tray splays the cards like a held hand. The
+     step has to stay wide enough that each card's middle is left uncovered,
+     or the neighbours become impossible to tap. */
+  transform-origin: 50% 260%;
+  transform:
+    rotate(calc(var(--i) * 12deg))
+    translateY(var(--lift));
+  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.3, 1),
+              box-shadow 320ms ease;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 8px 18px rgba(0, 0, 0, 0.36);
+}
+
+.swatch__skin {
+  position: absolute;
+  inset: 0;
+  background-color: var(--sw-mid);
+  background-image: var(--sw-base);
+}
+
+.swatch__skin::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--sw-grain);
+  background-size: var(--sw-grain-size, 160px);
+  mix-blend-mode: overlay;
+  opacity: var(--sw-grain-op, 0.5);
+}
+
+.swatch__skin::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--sw-weave, none);
+  background-size: var(--sw-weave-size, 12px);
+  mix-blend-mode: soft-light;
+  opacity: var(--sw-weave-op, 0);
+}
+
+/* A pin of the matching hardware, so the finish is visible on the card too. */
+.swatch__stud {
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  width: 15px;
+  height: 15px;
+  margin-left: -7.5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 34% 28%,
+    var(--sw-metal-hi),
+    var(--sw-metal-mid) 52%,
+    var(--sw-metal-lo) 100%
+  );
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.swatch:hover { --lift: -8px; }
+
+.swatch[aria-checked="true"] {
+  --lift: -18px;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.85),
+    0 12px 26px rgba(0, 0, 0, 0.42);
+}
+
+.swatch:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Actions
+   -------------------------------------------------------------------------- */
+
+.inside__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ghost-btn {
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: 21px;
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.ghost-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.ghost-btn:active { transform: scale(0.97); }
+
+.ghost-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.ghost-btn--icon {
+  width: 42px;
+  min-height: 42px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+/* Two bars: both upright means sound is on, and one tips over when muted. */
+.ghost-btn__glyph {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+
+.ghost-btn__glyph::before,
+.ghost-btn__glyph::after {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 220ms cubic-bezier(0.2, 0.85, 0.3, 1), height 220ms ease;
+}
+
+.ghost-btn__glyph::before { left: 3px; height: 9px; }
+.ghost-btn__glyph::after  { left: 10px; height: 15px; }
+
+.ghost-btn[aria-pressed="false"] .ghost-btn__glyph::before { height: 7px; }
+.ghost-btn[aria-pressed="false"] .ghost-btn__glyph::after {
+  height: 13px;
+  transform: rotate(38deg);
+  transform-origin: 50% 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion — hold the transitions, keep the state changes.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .swatch,
+  .ghost-btn,
+  .catch,
+  .reveal,
+  .hint,
+  .hasp__swing {
+    transition-duration: 1ms;
+  }
+
+  .plate[data-armed="1"] .catch::after,
+  .plate[data-reject="1"] {
+    animation: none;
+  }
+}
