@@ -31,6 +31,22 @@ for (const [tag, src] of [...html.matchAll(/<script src="([^"]+)"><\/script>/g)]
   html = html.replace(tag, `<script>\n/* ${src} */\n${js.trim()}\n</script>`);
 }
 
+/* Images the stylesheets point at, so the built file makes no requests.
+   Paths are relative to the stylesheet, which lives one level down. */
+const MIME = {
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp', '.gif': 'image/gif', '.svg': 'image/svg+xml'
+};
+
+for (const [tag, href] of [...html.matchAll(/url\("(?!data:)([^"]+)"\)/g)]) {
+  const rel = href.replace(/^\.\.\//, '');
+  const ext = rel.slice(rel.lastIndexOf('.')).toLowerCase();
+  const mime = MIME[ext];
+  if (!mime) continue;
+  const data = await readFile(join(root, rel));
+  html = html.replaceAll(tag, `url("data:${mime};base64,${data.toString('base64')}")`);
+}
+
 if (fragment) {
   html = html
     .replace(/^[\s\S]*?<title>/, '<title>')

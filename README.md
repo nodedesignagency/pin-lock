@@ -23,6 +23,12 @@ a desktop, a tablet, a wide browser window — the piece is mounted in a drawn
 iPhone instead, the way the Simulator shows an app, and the chrome is drawn
 rather than borrowed.
 
+Behind it is `backdrop.jpg`, a web-sized copy of `image 261.png`. A tall
+painting in a wide window can only be cropped hard or letterboxed; cropping is
+the honest choice, and 2px of blur stops the crop reading as an accident. The
+handset carries its own drop shadow, so it separates without the art having to
+be dimmed.
+
 The screen inside is always laid out at a true 393 x 852 points and the whole
 handset is scaled to fit, so nothing inside has to know it is in a mockup.
 That means everything on the screen measures itself in container units rather
@@ -50,8 +56,9 @@ node build.mjs --fragment   # dist/pin-lock.fragment.html — no <head>/<body>,
                             # for hosts that supply their own
 ```
 
-`dist/pin-lock.html` is one self-contained file with no external requests, so
-it can be mailed, AirDropped or dropped on any static host as-is.
+Images the stylesheets point at are inlined as data URIs too, so
+`dist/pin-lock.html` is one self-contained file that makes no requests at all
+— it can be mailed, AirDropped or dropped on any static host as-is.
 
 ## Settings
 
@@ -87,6 +94,8 @@ js/
   lock.js           arming, the catch, the hasp
   case.js           the open and shut choreography
   app.js            wiring, the deck, the hint
+image 261.png       the original artwork behind the handset
+backdrop.jpg        web-sized copy of it, the one the CSS loads
 build.mjs           inline everything into one file
 ```
 

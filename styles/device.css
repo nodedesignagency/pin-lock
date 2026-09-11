@@ -35,13 +35,59 @@
 
 /* Hardware is drawn only when the handset is on show. */
 .device__key,
-.screen-ui { display: none; }
+.screen-ui,
+.backdrop { display: none; }
+
+/* --------------------------------------------------------------------------
+   Backdrop — the artwork the handset is photographed against.
+
+   A tall painting in a wide window can only be cropped hard or letterboxed.
+   Cropping it is the honest choice, and a little blur stops the crop reading
+   as an accident: the art becomes the room the phone is standing in rather
+   than a second subject competing with it.
+   -------------------------------------------------------------------------- */
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Bled past the edges, because blur samples short at the bounds and would
+   otherwise leave a soft grey border. */
+.backdrop::before {
+  content: "";
+  position: absolute;
+  inset: -5%;
+  /* Framed below centre so the crop lands on the hood and the raised hand. */
+  background: url("../backdrop.jpg") 50% 32% / cover no-repeat;
+  /* Just enough to stop the crop reading as an accident. The handset carries
+     its own drop shadow, so it separates without the art being dimmed. */
+  filter: blur(2px);
+}
+
+/* Sits it back far enough that the titanium edge reads against it. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(76% 56% at 50% 44%,
+      rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.3) 54%, rgba(0, 0, 0, 0.62) 100%),
+    linear-gradient(180deg,
+      rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.05) 28%,
+      rgba(0, 0, 0, 0.05) 64%, rgba(0, 0, 0, 0.48) 100%);
+}
 
 /* --------------------------------------------------------------------------
    Mounted — enough room for the whole handset and its shadow.
    -------------------------------------------------------------------------- */
 
 @media (min-width: 520px) and (min-height: 560px) {
+
+  .viewport { background: #07070a; }
+  .backdrop { display: block; }
 
   /* Centred on its own margins rather than by the grid: a scaled element
      still lays out at full size, and a grid item taller than its container
