@@ -11,6 +11,7 @@
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%23301608"/><rect x="3" y="11" width="26" height="10" rx="2" fill="%23c9a051"/><g fill="%23241703"><rect x="7" y="13.4" width="3.6" height="5.2" rx="1"/><rect x="12" y="13.4" width="3.6" height="5.2" rx="1"/><rect x="17" y="13.4" width="3.6" height="5.2" rx="1"/></g><rect x="23" y="13" width="3.6" height="6" rx="1.2" fill="%23f7e6b4"/></svg>'>
 
 <link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/device.css">
 <link rel="stylesheet" href="styles/case.css">
 <link rel="stylesheet" href="styles/lock.css">
 <link rel="stylesheet" href="styles/inside.css">
@@ -18,7 +19,16 @@
 <body>
 
 <div class="viewport">
-  <div class="frame" id="frame">
+  <div class="device" id="device">
+
+    <i class="device__key device__key--action" aria-hidden="true"></i>
+    <i class="device__key device__key--vol-up" aria-hidden="true"></i>
+    <i class="device__key device__key--vol-down" aria-hidden="true"></i>
+    <i class="device__key device__key--side" aria-hidden="true"></i>
+
+    <div class="device__body">
+     <div class="device__bezel">
+      <div class="frame" id="frame">
     <div class="stage" id="stage">
 
       <!-- ── What lives inside the case ─────────────────────────────── -->
@@ -102,9 +112,42 @@
 
       <p class="sr-only" id="announce" role="status" aria-live="polite"></p>
     </div><!-- /stage -->
-  </div><!-- /frame -->
+
+      <!-- ── Hardware drawn over the screen, mockup only ──────────────── -->
+      <div class="screen-ui" aria-hidden="true">
+        <div class="statusbar">
+          <span class="statusbar__time" id="clock">9:41</span>
+          <span class="statusbar__glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor">
+              <rect y="7.6" width="3" height="3.4" rx="1"/>
+              <rect x="4.7" y="5.2" width="3" height="5.8" rx="1"/>
+              <rect x="9.4" y="2.6" width="3" height="8.4" rx="1"/>
+              <rect x="14" width="3" height="11" rx="1"/>
+            </svg>
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor">
+              <path d="M8 10.8 5.85 8.35a3.3 3.3 0 0 1 4.3 0L8 10.8Z"/>
+              <path d="M8 5.15c1.55 0 2.97.58 4.04 1.54l1.45-1.65A8.15 8.15 0 0 0 8 2.95a8.15 8.15 0 0 0-5.49 2.09l1.45 1.65A6.02 6.02 0 0 1 8 5.15Z"/>
+              <path d="M8 0C5.03 0 2.32 1.07.23 2.85l1.45 1.64A9.62 9.62 0 0 1 8 2.1c2.46 0 4.71.9 6.32 2.39l1.45-1.64A11.66 11.66 0 0 0 8 0Z"/>
+            </svg>
+            <svg width="27.4" height="13" viewBox="0 0 27.4 13">
+              <rect x=".55" y=".55" width="23.9" height="11.9" rx="3.8"
+                    fill="none" stroke="currentColor" stroke-opacity=".4" stroke-width="1.1"/>
+              <rect x="2.4" y="2.4" width="16.2" height="8.2" rx="2.2" fill="currentColor"/>
+              <path d="M26.1 4.7v3.6a2.1 2.1 0 0 0 0-3.6Z" fill="currentColor" fill-opacity=".45"/>
+            </svg>
+          </span>
+        </div>
+        <span class="island"></span>
+        <span class="home-indicator"></span>
+      </div>
+
+      </div><!-- /frame -->
+     </div><!-- /bezel -->
+    </div><!-- /body -->
+  </div><!-- /device -->
 </div><!-- /viewport -->
 
+<script src="js/device.js"></script>
 <script src="js/textures.js"></script>
 <script src="js/materials.js"></script>
 <script src="js/sound.js"></script>

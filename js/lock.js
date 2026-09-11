@@ -57,6 +57,12 @@
   Lock.prototype.layout = function () {
     for (var i = 0; i < this.drums.length; i++) this.drums[i].layout();
     this._throw = Math.max(12, this.catchEl.offsetWidth * 0.42);
+    /* Screen pixels per layout pixel, so a drag across a scaled handset moves
+       the catch by what the finger actually covered. */
+    var rect = this.catchEl.getBoundingClientRect();
+    this._scale = rect.width && this.catchEl.offsetWidth
+      ? rect.width / this.catchEl.offsetWidth
+      : 1;
   };
 
   Lock.prototype.digits = function () {
@@ -116,7 +122,7 @@
 
     el.addEventListener('pointermove', function (e) {
       if (pointer !== e.pointerId) return;
-      var dx = e.clientX - startX;
+      var dx = (e.clientX - startX) / (self._scale || 1);
       moved = Math.max(moved, Math.abs(dx));
 
       var limit = self.armed ? self._throw : RESIST_PX;

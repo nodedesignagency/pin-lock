@@ -79,8 +79,12 @@
 
   Drum.prototype.layout = function () {
     var h = this.el.clientHeight || 40;
-    this.stepPx = h;
+    /* The radius is a CSS transform, so it is in the drum's own layout units.
+       Drag deltas arrive in screen pixels, though, and the handset around the
+       screen may be scaled — so a detent is worth the drum's *rendered*
+       height, not its laid-out one. */
     this.radius = h * RADIUS_RATIO;
+    this.stepPx = this.el.getBoundingClientRect().height || h;
     for (var i = 0; i < FACES; i++) {
       this.faces[i].style.transform =
         'rotateX(' + (-i * STEP_DEG) + 'deg) translateZ(' + this.radius.toFixed(2) + 'px)';

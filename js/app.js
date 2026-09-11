@@ -243,6 +243,10 @@
       lock.layout();
     }
 
+    /* Scaling the handset changes rendered sizes but not laid-out ones, so
+       the observer alone would miss it. */
+    window.addEventListener('pinlock:rescale', measure);
+
     if (window.ResizeObserver) {
       new ResizeObserver(measure).observe(stage);
     } else {

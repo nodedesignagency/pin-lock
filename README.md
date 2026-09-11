@@ -15,6 +15,20 @@ zipper replaced by hardware from a vintage three-dial case lock.
 the plate to be reminded of it; leave the screen alone for a few seconds and
 it offers.
 
+## The handset
+
+On a phone the screen runs edge to edge and the real hardware supplies the
+status bar, the island and the home indicator. Anywhere with room to spare —
+a desktop, a tablet, a wide browser window — the piece is mounted in a drawn
+iPhone instead, the way the Simulator shows an app, and the chrome is drawn
+rather than borrowed.
+
+The screen inside is always laid out at a true 393 x 852 points and the whole
+handset is scaled to fit, so nothing inside has to know it is in a mockup.
+That means everything on the screen measures itself in container units rather
+than viewport units, and pointer deltas get divided back through the scale so
+a drag still tracks your finger exactly.
+
 ## Running it
 
 There's no build step and no dependencies — open `index.html` in a browser and
@@ -59,11 +73,13 @@ out of filtered noise bursts and decaying oscillators.
 ```
 index.html          structure
 styles/
-  base.css          reset, device frame, and the geometry every part shares
+  base.css          reset, screen frame, and the geometry every part shares
+  device.css        the drawn iPhone: rail, bezel, keys, island, status bar
   case.css          the two panels, the hide, the seam
   lock.css          plate, drums, hasp, catch
   inside.css        the lining, the greeting, the deck
 js/
+  device.js         scales the handset to fit, runs the status-bar clock
   textures.js       procedural leather, brushed metal, twill, satin
   materials.js      hides, hardware finishes, linings
   sound.js          the clicks, the snap, the thunk

@@ -1,0 +1,218 @@
+/* ==========================================================================
+   Pin Lock — the handset.
+
+   On a phone the screen runs edge to edge and the real hardware supplies the
+   status bar, the island and the home indicator. Anywhere with room to spare
+   the piece is mounted in a device instead, the way the Simulator shows an
+   app, and the chrome below is drawn rather than borrowed.
+
+   Every measurement is in iPhone points at 1:1; --k scales the whole handset
+   to fit whatever is looking at it.
+   ========================================================================== */
+
+.viewport {
+  --screen-w: 393px;
+  --screen-h: 852px;
+  --bezel: 9px;               /* black surround inside the rail */
+  --rail: 3px;                /* the titanium edge you see face on */
+  --screen-r: 55px;
+
+  --device-w: calc(var(--screen-w) + 2 * (var(--bezel) + var(--rail)));
+  --device-h: calc(var(--screen-h) + 2 * (var(--bezel) + var(--rail)));
+}
+
+.device {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.device__body,
+.device__bezel {
+  width: 100%;
+  height: 100%;
+}
+
+/* Hardware is drawn only when the handset is on show. */
+.device__key,
+.screen-ui { display: none; }
+
+/* --------------------------------------------------------------------------
+   Mounted — enough room for the whole handset and its shadow.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 520px) and (min-height: 560px) {
+
+  /* Centred on its own margins rather than by the grid: a scaled element
+     still lays out at full size, and a grid item taller than its container
+     gets clamped to the start edge instead of staying centred. */
+  .device {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--device-w);
+    height: var(--device-h);
+    margin: calc(var(--device-h) / -2) 0 0 calc(var(--device-w) / -2);
+    transform: scale(var(--k, 1));
+    transform-origin: 50% 50%;
+  }
+
+  /* Contact shadow on the ground beneath it. */
+  .device::after {
+    content: "";
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    bottom: -5%;
+    height: 12%;
+    border-radius: 50%;
+    background: radial-gradient(50% 50%, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0) 72%);
+    filter: blur(14px);
+    z-index: -1;
+  }
+
+  /* Brushed titanium, catching the light along both long edges. */
+  .device__body {
+    padding: var(--rail);
+    border-radius: calc(var(--screen-r) + var(--bezel) + var(--rail));
+    background-image: linear-gradient(
+      100deg,
+      #66625d 0%, #b8b3ab 7%, #837e77 19%, #cbc6bf 33%,
+      #767169 50%, #b2ada5 67%, #6a665f 81%, #a8a39b 93%, #66625d 100%
+    );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.55),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+      0 1px 2px rgba(0, 0, 0, 0.6),
+      0 26px 46px -16px rgba(0, 0, 0, 0.85),
+      0 60px 96px -40px rgba(0, 0, 0, 0.9);
+  }
+
+  .device__bezel {
+    padding: var(--bezel);
+    border-radius: calc(var(--screen-r) + var(--bezel));
+    background: #08080a;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(255, 255, 255, 0.1),
+      inset 0 2px 5px rgba(0, 0, 0, 0.9);
+  }
+
+  .device__key { display: block; }
+  .screen-ui { display: block; }
+}
+
+/* --------------------------------------------------------------------------
+   Side keys
+   -------------------------------------------------------------------------- */
+
+.device__key {
+  position: absolute;
+  width: 3.5px;
+  background-image: linear-gradient(90deg, #55514c 0%, #a29d95 45%, #6e6a64 100%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+}
+
+.device__key--action,
+.device__key--vol-up,
+.device__key--vol-down {
+  left: -2.5px;
+  border-radius: 2px 0 0 2px;
+}
+
+.device__key--side {
+  right: -2.5px;
+  border-radius: 0 2px 2px 0;
+  background-image: linear-gradient(90deg, #6e6a64 0%, #a29d95 55%, #55514c 100%);
+}
+
+.device__key--action   { top: 158px; height: 30px; }
+.device__key--vol-up   { top: 214px; height: 62px; }
+.device__key--vol-down { top: 290px; height: 62px; }
+.device__key--side     { top: 250px; height: 104px; }
+
+/* --------------------------------------------------------------------------
+   Screen furniture — island, status bar, home indicator.
+   -------------------------------------------------------------------------- */
+
+.screen-ui {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 126px;
+  height: 37px;
+  margin-left: -63px;
+  border-radius: 19px;
+  background: #000;
+}
+
+/* The lens sits off to one side of the island, not in the middle of it. */
+.island::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  width: 11px;
+  height: 11px;
+  margin-top: -5.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #2c3542 0%, #0d1016 56%, #04060a 100%);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+}
+
+.statusbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  color: #fff;
+  font-size: 16.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+/* The time centres in the space beside the island, not in the screen. */
+.statusbar__time {
+  position: absolute;
+  top: 17px;
+  left: 0;
+  width: 133px;
+  text-align: center;
+}
+
+.statusbar__glyphs {
+  position: absolute;
+  top: 21px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.28));
+}
+
+.statusbar__glyphs svg { display: block; }
+
+.home-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  width: 140px;
+  height: 5px;
+  margin-left: -70px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .device::after { filter: none; }
+}
